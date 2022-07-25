@@ -1,35 +1,35 @@
 const mongo = require('mongoose');
 const modelHandler = require('../models/modelHandler');
 const mongodb = require('../mongo');
+const bcrypt = require('bcrypt');
 mongodb.connectDB();
 
 
-async function getAll(req,res){
+async function getAll(req,res,next){
     try {
         let retStatus = await modelHandler.find({},{__v:0});
         res.status(200).json(retStatus);
     } catch (error) {
-        res.status(400).json({message:error.message})
+        next(error);
     }
-    // throw new Error('Invalid JSON Response')
 }
 
-async function getOne(req,res){
+async function getOne(req,res,next){
     try {
         let id1 = req.params.id
         let found = await modelHandler.find({"_id":id1})
 
         if(found.length > 0){
-            res.json(found)
+            res.json(found);
         }else{
-            res.status(400).json({message : `Given id : ${id1} not found in database`})
+            res.status(400).json({message : `Given id : ${id1} not found in database`});
         }
     } catch (error) {
-        res.status(400).json({message : error.message})
+        next(error);
     }
 }
 
-const createUser = async(req,res) => {
+const createUser = async(req,res,next) => {
     try {
         let newUser = {
             name : req.body.name,
@@ -52,7 +52,7 @@ const createUser = async(req,res) => {
     }
 };
 
-async function updateUser(req,res){
+async function updateUser(req,res,next){
     try {
         let id1 = req.params.id
         let found = await modelHandler.findById(id1);
@@ -63,11 +63,11 @@ async function updateUser(req,res){
             res.json(updatedDoc)
         }
     } catch (error) {
-        res.status(400).json({message : error.message})
+        next(error);
     }
 }
 
-async function deleteUser(req,res){
+async function deleteUser(req,res,next){
     try {
         let id1 = req.params.id
         let found = await modelHandler.findById(id1);
@@ -81,12 +81,18 @@ async function deleteUser(req,res){
             })
         }
     } catch (error) {
-        res.status(400).json({message : error.message})
+        next(error);
     }
 }
 
+async function invalidReq(req,res){
+    res.status(400).json({
+        "status" : "Failed",
+        "message" : "Invalid HTTP Request"
+    })
+}
 // mongodb.disconnectDB();
 
-module.exports = {getAll,getOne,createUser , updateUser ,deleteUser };
+module.exports = {getAll,getOne,createUser , updateUser ,deleteUser , invalidReq };
 
 

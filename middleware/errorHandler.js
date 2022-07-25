@@ -1,6 +1,6 @@
-const errorHandler = (err,req,res,next) => {
-    res.status(400).json({message : "Something went wrong"})
-    return
+const customErrorHandler = (err, req, res, next) => {
+    res.status(400).json({message : err.message});
+    // next();
 }
 
-module.exports = { errorHandler }
+module.exports = { customErrorHandler }

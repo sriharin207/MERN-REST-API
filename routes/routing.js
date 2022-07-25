@@ -17,10 +17,8 @@ router.put('/:id',control.updateUser)
 // delete function
 router.delete('/:id',control.deleteUser)
 
-
-router.all('*',(req,res) => {
-    res.status(400).json({"message" : "Invalid HTTP Request"})
-});
+//invalid HTTP requests
+router.all('*',control.invalidReq);
 
 module.exports = router ;
 
