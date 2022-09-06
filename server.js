@@ -31,7 +31,7 @@ const logger = (req,res,next) => {
     next();
 }
 
-app.use(logger)
+app.use(logger);
 app.use('/members',require('./routes/routing.js'));
 app.use(customErrorHandler);
 app.listen(port,() => {
